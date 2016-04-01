@@ -3,4 +3,7 @@
     <color name="colorPrimary">#FFEDEDED</color>
     <color name="colorPrimaryDark">#FFEDEDED</color>
     <color name="colorAccent">#FF8C00</color>
+    <color name="alert">#FFF63A3A</color>
+    <color name="pressed">#FF04E3CF</color>
+    <color name="normal">#009688</color>
 </resources>

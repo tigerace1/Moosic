@@ -20,7 +20,7 @@ import android.widget.TabHost;
 
 import java.util.ArrayList;
 import java.util.List;
-public class Tabs extends AppCompatActivity implements ViewPager.OnPageChangeListener,TabHost.OnTabChangeListener{
+public class Tabs extends AppCompatActivity implements ViewPager.OnPageChangeListener,TabHost.OnTabChangeListener {
     private ViewPager viewPager;
     private TabHost tabHost;
     List<Fragment> fragmentList;

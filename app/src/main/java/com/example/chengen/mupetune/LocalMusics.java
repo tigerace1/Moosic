@@ -60,7 +60,7 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
         });
         musicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Intent intent = new Intent(getActivity(), MusicPlayer.class);
                 intent.putExtra("pos", position).putExtra("songlist", defaultSongs);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -136,4 +136,9 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
         canvas.drawBitmap(bitmap, middleX - bitmap.getWidth() / 2, middleY - bitmap.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
         return scaledBitmap;
     }
- }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+}

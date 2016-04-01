@@ -94,6 +94,7 @@ public class MusicPlayer extends AppCompatActivity implements View.OnClickListen
             playAndStop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
         }else {
             myHandler.postDelayed(UpdateSongTime, 100);
+            isRunning = true;
             seekBar.setMax(mp.getDuration());
             totalTime.setText("| " + getTimeString(mp.getDuration()));
             if (mp.isPlaying()){

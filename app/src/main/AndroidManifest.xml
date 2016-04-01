@@ -12,9 +12,10 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
-        android:icon="@drawable/mupetune"
+        android:icon="@drawable/moose"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
@@ -37,9 +38,9 @@
         </activity>
         <activity android:name=".SongDataAdapter" >
         </activity>
-        <activity android:name=".LocalMusics">
+        <activity android:name=".LocalMusics" >
         </activity>
-        <activity android:name=".Tabs">
+        <activity android:name=".Tabs" >
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -52,7 +53,12 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-        <activity android:name=".OnlineMusics" >
+
+        <activity android:name=".Search" >
+        </activity>
+        <activity android:name=".SignUpLayout" >
+        </activity>
+        <activity android:name=".OnlineMusic" >
         </activity>
     </application>
 

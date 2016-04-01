@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="65dp"
+    android:layout_height="75dp"
     tools:context="com.example.chengen.mupetune.SongDataAdapter">
 
     <ImageView
@@ -15,32 +15,31 @@
 
     <TextView
         android:layout_width="200dp"
-        android:layout_height="35dp"
+        android:layout_height="30dp"
         android:id="@+id/tvSongName"
         android:layout_marginLeft="10dp"
-        android:layout_alignTop="@+id/ivSongImage"
-        android:layout_toEndOf="@+id/ivSongImage"
         android:textColor="#000"
         android:textSize="18sp"
         android:singleLine="true"
-        android:layout_above="@+id/tvartist" />
-
-    <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:id="@+id/ivIsPlaying"
-        android:layout_marginLeft="35dp"
-        android:visibility="invisible"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="49dp" />
+        android:layout_alignTop="@+id/ivSongImage"
+        android:layout_toEndOf="@+id/ivSongImage"
+        android:layout_centerVertical="true" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="30dp"
         android:id="@+id/tvartist"
         android:textSize="14sp"
         android:textColor="#8c8c8c"
-        android:layout_alignBottom="@+id/ivSongImage"
-        android:layout_alignStart="@+id/tvSongName" />
+        android:layout_below="@+id/tvSongName"
+        android:layout_alignStart="@+id/tvSongName"
+        android:layout_marginBottom="5dp" />
+
+    <ImageButton
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:id="@+id/imageButton2"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="25dp" />
 </RelativeLayout>

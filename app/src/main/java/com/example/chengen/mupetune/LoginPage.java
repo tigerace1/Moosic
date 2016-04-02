@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -35,7 +38,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
         signUp = (TextView)findViewById(R.id.tvsignup);
         login.setOnClickListener(this);
         signUp.setOnClickListener(this);
-        user.setHint("UserName/e-mail");
+        user.setHint("Username");
         password.setHint("Password");
         isLogin=true;
     }
@@ -44,8 +47,8 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
         switch (v.getId()){
             case R.id.btnlogin:
                 String username = user.getText().toString();
-                String password = user.getText().toString();
-                final String args = "username="+username+"&password="+password;
+                String pass = password.getText().toString();
+                final String args = "username="+username+"&password="+pass;
                 //need to put anything about network into a thread
                 Thread t = new Thread(){
                     @Override
@@ -65,7 +68,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                     startActivity(new Intent(this,Tabs.class));
                     finish();
                 }else{
-                    Toast.makeText(getApplicationContext(),"Login failed",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_LONG).show();
                     login.setClickable(true);
                 }
                 break;
@@ -77,10 +80,10 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                 break;
         }
     }
-    private  void postLogin(String urlParameters){
+    private void postLogin(String urlParameters){
         try {
             //url here
-            URL obj = new URL("");
+            URL obj = new URL("http://192.168.0.115:3000/login");
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
@@ -95,16 +98,42 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
-            if(response.toString().equals("succees")){
+            if(response.toString().equals("success")){
                 isLogin=true;
-                SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putString("username", user.getText().toString());
-                editor.putString("password", password.getText().toString());
-                editor.apply();
+                getUserInfo(user.getText().toString());
             }else {
                 isLogin=false;
             }
+            in.close();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void getUserInfo(String user){
+        try {
+            URL obj = new URL("http://192.168.0.115:3000/getUserInfo/" + user);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            String userInfo = response.toString();
+            JSONArray jArray = new JSONArray(userInfo);
+            JSONObject json_obj = jArray.getJSONObject(0);
+            String username = json_obj.getString("username");
+            String firstName = json_obj.getString("firstName");
+            String lastName = json_obj.getString("lastName");
+            String email = json_obj.getString("email");
+            SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString("username", username);
+            editor.putString("firstName", firstName);
+            editor.putString("lastName", lastName);
+            editor.putString("email", email);
+            editor.apply();
             in.close();
         }catch (Exception e){
             e.printStackTrace();

@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,13 +20,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TabHost;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-public class Tabs extends AppCompatActivity implements ViewPager.OnPageChangeListener,TabHost.OnTabChangeListener {
+public class Tabs extends AppCompatActivity implements Communicator, ViewPager.OnPageChangeListener,TabHost.OnTabChangeListener {
     private ViewPager viewPager;
     private TabHost tabHost;
     List<Fragment> fragmentList;
     private int index;
+    private MusicPlayer musicPlayer;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +36,21 @@ public class Tabs extends AppCompatActivity implements ViewPager.OnPageChangeLis
         new  Intent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setLogo(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.moo)));
+        SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        if(sharedPreferences.contains("username"))
+            getSupportActionBar().setTitle(sharedPreferences.getString("username",""));
         fragmentList = new ArrayList<>();
+        musicPlayer = new MusicPlayer();
         fragmentList.add(new LocalMusics());
+        fragmentList.add(musicPlayer);
+        fragmentList.add(new Profile());
         index = 0;
         initPager();
         initHost();
+    }
+    @Override
+    public void respond(int position, ArrayList<File> songs) {
+        musicPlayer.getData(position,songs);
     }
     private class FakeContent implements TabHost.TabContentFactory{
         Context context;
@@ -87,6 +101,9 @@ public class Tabs extends AppCompatActivity implements ViewPager.OnPageChangeLis
     @Override
     public void onTabChanged(String tabId) {
         int selectedItem = tabHost.getCurrentTab();
+        for(int i=0;i<tabHost.getTabWidget().getTabCount();i++)
+            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.GRAY);
+        tabHost.getTabWidget().getChildAt(selectedItem).setBackgroundColor(Color.LTGRAY);
         viewPager.setCurrentItem(selectedItem);
     }
     @Override
@@ -96,6 +113,10 @@ public class Tabs extends AppCompatActivity implements ViewPager.OnPageChangeLis
     @Override
     public void onPageSelected(int position) {
         tabHost.setCurrentTab(position);
+        int selectedItem = tabHost.getCurrentTab();
+        for(int i=0;i<tabHost.getTabWidget().getTabCount();i++)
+            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.GRAY);
+        tabHost.getTabWidget().getChildAt(selectedItem).setBackgroundColor(Color.LTGRAY);
     }
     @Override
     public void onPageScrollStateChanged(int state) {
@@ -128,12 +149,14 @@ public class Tabs extends AppCompatActivity implements ViewPager.OnPageChangeLis
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.isplaying){
-            Intent intent = new Intent(this,MusicPlayer.class);
+        if (item.getItemId() == R.id.search){
+            Intent intent = new Intent(this,Search.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
             return true;
+        }if(item.getItemId()==R.id.action_logout){
+            //Do something with log out
         }
         return super.onOptionsItemSelected(item);
     }

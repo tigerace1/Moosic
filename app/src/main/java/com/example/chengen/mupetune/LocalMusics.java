@@ -30,6 +30,7 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
     private static final String path = "/storage/extSdCard/music";
     private ListView musicList;
     private static SongDataAdapter adapter;
+    private Communicator comm;
     View v;
     @Nullable
     @Override
@@ -43,6 +44,7 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
         ImageButton albums = (ImageButton) v.findViewById(R.id.ibAlbums);
         ImageButton custom = (ImageButton) v.findViewById(R.id.ibCustom);
         ImageButton shuffle = (ImageButton)v.findViewById(R.id.ibShuffle);
+        comm = (Communicator)getActivity();
         if (adapter != null) {
             musicList.setAdapter(adapter);
         } else {
@@ -62,6 +64,7 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Intent intent = new Intent(getActivity(), MusicPlayer.class);
+                comm.respond(position,defaultSongs);
                 intent.putExtra("pos", position).putExtra("songlist", defaultSongs);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

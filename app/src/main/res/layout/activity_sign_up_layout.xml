@@ -84,7 +84,7 @@
         android:layout_width="237dp"
         android:layout_height="45dp"
         android:text="Sign Up"
-        android:id="@+id/btnsignUp"
+        android:id="@+id/btnSign"
         android:layout_gravity="center_horizontal"
         android:textColor="#FFFF"
         android:textSize="20sp"

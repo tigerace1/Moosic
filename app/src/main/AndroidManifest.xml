@@ -60,6 +60,8 @@
         </activity>
         <activity android:name=".OnlineMusic" >
         </activity>
+        <activity android:name=".Profile" >
+        </activity>
     </application>
 
 </manifest>

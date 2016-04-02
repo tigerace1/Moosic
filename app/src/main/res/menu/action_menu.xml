@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:icon="@drawable/plays"
-        android:title="playing"
-        android:id="@+id/isplaying"
+        android:icon="@drawable/search"
+        android:title="Search"
+        android:id="@+id/search"
         app:showAsAction="always|withText"/>
     <item
         android:id="@+id/action_settings"
@@ -19,6 +19,11 @@
     <item
         android:id="@+id/action_rooms"
         android:title="about..."
+        app:showAsAction="withText"
+        android:layout_gravity="center_horizontal"/>
+    <item
+        android:id="@+id/action_logout"
+        android:title="log out"
         app:showAsAction="withText"
         android:layout_gravity="center_horizontal"/>
  </menu>

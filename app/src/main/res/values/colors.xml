@@ -6,4 +6,5 @@
     <color name="alert">#FFF63A3A</color>
     <color name="pressed">#FF04E3CF</color>
     <color name="normal">#009688</color>
+    <color name="tab">#FFCFCFCF</color>
 </resources>

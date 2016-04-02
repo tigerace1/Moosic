@@ -10,26 +10,31 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true">
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
             <TabWidget
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:background="#FF8C00"
-                android:id="@android:id/tabs">
+                android:background="#afafaf"
+                android:id="@android:id/tabs"
+                android:baselineAligned="false"
+                android:layout_alignParentBottom="true"
+                android:tabStripEnabled="false"
+                android:divider="0.5dp">
             </TabWidget>
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_above="@android:id/tabs">
                 <android.support.v4.view.ViewPager
                     android:id="@+id/viewpager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 </android.support.v4.view.ViewPager>
             </FrameLayout>
-        </LinearLayout>
+        </RelativeLayout>
     </TabHost>
 </RelativeLayout>

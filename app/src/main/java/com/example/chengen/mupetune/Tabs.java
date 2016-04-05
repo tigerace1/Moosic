@@ -7,18 +7,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -33,7 +36,6 @@ public class Tabs extends AppCompatActivity implements Communicator, ViewPager.O
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tabs_layout);
-        new  Intent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setLogo(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.moo)));
         SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
@@ -41,6 +43,7 @@ public class Tabs extends AppCompatActivity implements Communicator, ViewPager.O
             getSupportActionBar().setTitle(sharedPreferences.getString("username",""));
         fragmentList = new ArrayList<>();
         musicPlayer = new MusicPlayer();
+        fragmentList.add(new MoosicRooms());
         fragmentList.add(new LocalMusics());
         fragmentList.add(musicPlayer);
         fragmentList.add(new Profile());
@@ -50,7 +53,9 @@ public class Tabs extends AppCompatActivity implements Communicator, ViewPager.O
     }
     @Override
     public void respond(int position, ArrayList<File> songs) {
-        musicPlayer.getData(position,songs);
+        musicPlayer.getData(position, songs);
+        tabHost.setCurrentTab(2);
+        viewPager.setCurrentItem(2);
     }
     private class FakeContent implements TabHost.TabContentFactory{
         Context context;
@@ -74,21 +79,32 @@ public class Tabs extends AppCompatActivity implements Communicator, ViewPager.O
     private void initHost(){
         tabHost=(TabHost)findViewById(R.id.tabHost);
         tabHost.setup();
-        String[] tabNames = {"Rooms","Music list","Profile"};
+        String[] tabNames = {"rooms","home","playing","profile"};
         Bitmap list= BitmapFactory.decodeResource(getResources(), R.drawable.musiclist);
         Bitmap moose = BitmapFactory.decodeResource(getResources(), R.drawable.moo);
-        Bitmap profile = BitmapFactory.decodeResource(getResources(), R.drawable.prof);;
+        Bitmap profile = BitmapFactory.decodeResource(getResources(), R.drawable.prof);
+        Bitmap play = BitmapFactory.decodeResource(getResources(), R.drawable.plays);
         Drawable[] icons={new BitmapDrawable(getResources(),Bitmap.createScaledBitmap(moose,50,50,false)),
-                new BitmapDrawable(getResources(),Bitmap.createScaledBitmap(list,50,50,false))
+                new BitmapDrawable(getResources(),Bitmap.createScaledBitmap(list,50,50,false)),
+                new BitmapDrawable(getResources(),Bitmap.createScaledBitmap(play,50,50,false))
                 ,new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(profile,50,50,false))};
         for(int i=0;i<tabNames.length;i++){
             TabHost.TabSpec tabSpec;
             tabSpec = tabHost.newTabSpec(tabNames[i]);
-            tabSpec.setIndicator("",icons[i]);
+            tabSpec.setIndicator(tabNames[i], icons[i]);
             tabSpec.setContent(new FakeContent(getApplicationContext()));
             tabHost.addTab(tabSpec);
+            TextView x = (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            ImageView imageView = (ImageView)tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.icon);
+            imageView.setScaleY(25);
+            imageView.setScaleX(25);
+            x.setTextSize(12);
+            x.setGravity(Gravity.TOP);
         }
+        for(int i=0;i<tabHost.getTabWidget().getTabCount();i++)
+            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.tab2));
         tabHost.setCurrentTab(index);
+        tabHost.getTabWidget().getChildAt(index).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.tab));
         tabHost.setOnTabChangedListener(this);
     }
     private void initPager(){
@@ -102,8 +118,8 @@ public class Tabs extends AppCompatActivity implements Communicator, ViewPager.O
     public void onTabChanged(String tabId) {
         int selectedItem = tabHost.getCurrentTab();
         for(int i=0;i<tabHost.getTabWidget().getTabCount();i++)
-            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.GRAY);
-        tabHost.getTabWidget().getChildAt(selectedItem).setBackgroundColor(Color.LTGRAY);
+            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.tab2));
+        tabHost.getTabWidget().getChildAt(selectedItem).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.tab));
         viewPager.setCurrentItem(selectedItem);
     }
     @Override
@@ -115,8 +131,8 @@ public class Tabs extends AppCompatActivity implements Communicator, ViewPager.O
         tabHost.setCurrentTab(position);
         int selectedItem = tabHost.getCurrentTab();
         for(int i=0;i<tabHost.getTabWidget().getTabCount();i++)
-            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(Color.GRAY);
-        tabHost.getTabWidget().getChildAt(selectedItem).setBackgroundColor(Color.LTGRAY);
+            tabHost.getTabWidget().getChildAt(i).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.tab2));
+        tabHost.getTabWidget().getChildAt(selectedItem).setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.tab));
     }
     @Override
     public void onPageScrollStateChanged(int state) {
@@ -156,7 +172,12 @@ public class Tabs extends AppCompatActivity implements Communicator, ViewPager.O
             finish();
             return true;
         }if(item.getItemId()==R.id.action_logout){
-            //Do something with log out
+            SharedPreferences preferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+            startActivity(new Intent(this, LoginPage.class));
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

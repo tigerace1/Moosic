@@ -32,7 +32,7 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
     private static MediaPlayer mp;
     private Bitmap loop,repeat,random,bitmap;;
     private SeekBar seekBar;
-    private ImageButton mode;
+    private ImageButton mode,foreward,backward;
     private ImageView photo;
     private TextView currentTime, totalTime, name,artist;
     private ToggleButton playAndStop;
@@ -43,20 +43,28 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
     public void getData(int pos,ArrayList<File>songs){
         position=pos;
         mySongs=songs;
+        if (mySongs!=null) {
+            if (mp != null) {
+                mp.stop();
+                mp.release();
+                mp = null;
+            }
+            playSongs(position);
+        }
     }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        v = inflater.inflate(R.layout.local_music, container, false);
-        loop = BitmapFactory.decodeResource(getResources(),R.drawable.looping);
-        repeat = BitmapFactory.decodeResource(getResources(),R.drawable.repeating);
+        v = inflater.inflate(R.layout.activity_music_player, container, false);
+        loop = BitmapFactory.decodeResource(getResources(), R.drawable.looping);
+        repeat = BitmapFactory.decodeResource(getResources(), R.drawable.repeating);
         random = BitmapFactory.decodeResource(getResources(),R.drawable.randoming);
         seekBar = (SeekBar)v.findViewById(R.id.seekBar);
         photo = (ImageView)v.findViewById(R.id.ivSongImage);
         mode = (ImageButton)v.findViewById(R.id.ibMode);
-        ImageButton foreward = (ImageButton)v.findViewById(R.id.iBForward);
-        ImageButton backward = (ImageButton)v.findViewById(R.id.iBBackward);
+        foreward = (ImageButton)v.findViewById(R.id.iBForward);
+        backward = (ImageButton)v.findViewById(R.id.iBBackward);
         playAndStop = (ToggleButton)v.findViewById(R.id.tBPlayStop);
         currentTime = (TextView)v.findViewById(R.id.tvCurrentTime);
         totalTime = (TextView)v.findViewById(R.id.tvTotalTime);
@@ -73,18 +81,12 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
         }else if(MODE_CODE==2){
             mode.setBackground(new BitmapDrawable(getResources(), random));
         }
-        if (mySongs!=null) {
-            if (mp != null) {
-                mp.stop();
-                mp.release();
-                mp = null;
-            }
-            playSongs(position);
-        }else if(mp==null){
+        if(mp==null){
             photo.setBackground(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(),R.drawable.musics)));
             foreward.setClickable(false);
             playAndStop.setClickable(false);
             backward.setClickable(false);
+            seekBar.setVisibility(View.INVISIBLE);
             totalTime.setText("00:00:00");
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.stopping);
             playAndStop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
@@ -117,6 +119,10 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
     };
     private void playSongs(int position) {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.going);
+        backward.setClickable(true);
+        playAndStop.setClickable(true);
+        foreward.setClickable(true);
+        seekBar.setVisibility(View.VISIBLE);
         playAndStop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
         Uri uri = Uri.parse(mySongs.get(position).toString());
         mp = MediaPlayer.create(getActivity().getApplicationContext(), uri);
@@ -131,11 +137,9 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             }
-
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
-
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mp.seekTo(seekBar.getProgress());

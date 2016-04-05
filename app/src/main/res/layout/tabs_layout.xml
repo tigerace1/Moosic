@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context=".Tabs">
     <TabHost
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,18 +11,7 @@
         android:layout_alignParentTop="true">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TabWidget
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="#afafaf"
-                android:id="@android:id/tabs"
-                android:baselineAligned="false"
-                android:layout_alignParentBottom="true"
-                android:tabStripEnabled="false"
-                android:divider="0.5dp">
-            </TabWidget>
+            android:layout_height="match_parent">
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
@@ -35,6 +23,16 @@
                     android:layout_height="match_parent">
                 </android.support.v4.view.ViewPager>
             </FrameLayout>
+            <TabWidget
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:id="@android:id/tabs"
+                android:baselineAligned="false"
+                android:layout_alignParentBottom="true"
+                android:tabStripEnabled="false"
+                android:background="#a5a5a5"
+                android:layout_marginBottom="0dp">
+            </TabWidget>
         </RelativeLayout>
     </TabHost>
 </RelativeLayout>

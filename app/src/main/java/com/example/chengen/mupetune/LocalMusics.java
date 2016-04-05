@@ -1,6 +1,5 @@
 package com.example.chengen.mupetune;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -25,10 +24,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class LocalMusics extends Fragment implements View.OnClickListener {
+public class LocalMusics extends Fragment implements View.OnClickListener,AdapterView.OnItemClickListener {
     private static ArrayList<File> defaultSongs;
     private static final String path = "/storage/extSdCard/music";
-    private ListView musicList;
+    private static ListView musics;
     private static SongDataAdapter adapter;
     private Communicator comm;
     View v;
@@ -37,45 +36,26 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         v = inflater.inflate(R.layout.local_music, container, false);
-        musicList = (ListView) v.findViewById(R.id.musicList);
         ImageButton love = (ImageButton) v.findViewById(R.id.ibLove);
         ImageButton singer = (ImageButton) v.findViewById(R.id.ibSingers);
         ImageButton recent = (ImageButton) v.findViewById(R.id.ibRecent);
         ImageButton albums = (ImageButton) v.findViewById(R.id.ibAlbums);
         ImageButton custom = (ImageButton) v.findViewById(R.id.ibCustom);
         ImageButton shuffle = (ImageButton)v.findViewById(R.id.ibShuffle);
+        musics = (ListView) v.findViewById(R.id.list_of_music);
         comm = (Communicator)getActivity();
         if (adapter != null) {
-            musicList.setAdapter(adapter);
+            musics.setAdapter(adapter);
         } else {
             updatePlayList();
         }
-        shuffle.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MusicPlayer.class);
-                intent.putExtra("pos",(int)(Math.random()*defaultSongs.size())).putExtra("songlist", defaultSongs);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
-        musicList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                Intent intent = new Intent(getActivity(), MusicPlayer.class);
-                comm.respond(position,defaultSongs);
-                intent.putExtra("pos", position).putExtra("songlist", defaultSongs);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                getActivity().finish();
-            }
-        });
+        shuffle.setOnClickListener(this);
         love.setOnClickListener(this);
         singer.setOnClickListener(this);
         recent.setOnClickListener(this);
         albums.setOnClickListener(this);
         custom.setOnClickListener(this);
+        musics.setOnItemClickListener(this);
         return v;
     }
     private void updatePlayList() {
@@ -85,9 +65,9 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
             Collections.addAll(defaultSongs, home.listFiles(new Mp3Filter()));
         }
         Collections.sort(defaultSongs);
-        adapter = new SongDataAdapter(getActivity(),
+        adapter = new SongDataAdapter(getActivity().getApplication(),
                 R.layout.activity_song_data_adapter);
-        Bitmap bitmap = null;
+        Bitmap bitmap;
         for (int i = 0; i < defaultSongs.size(); i++) {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
             mmr.setDataSource(defaultSongs.get(i).getPath());
@@ -99,7 +79,7 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
                 InputStream is = new ByteArrayInputStream(mmr.getEmbeddedPicture());
                 bitmap = BitmapFactory.decodeStream(is);
             } else {
-                bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.musics);
+                bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.musicnote);
             }
             if (singer == null || songName == null) {
                 singer = "";
@@ -108,18 +88,24 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
             SongDataProvider provider = new SongDataProvider(new BitmapDrawable(getResources(), resizeBitmap(bitmap, 80, 80))
                     , songName, singer);
             adapter.add(provider);
-            System.out.println(adapter.getCount());
         }
-        musicList.setAdapter(adapter);
-        bitmap.recycle();
+        musics.setAdapter(adapter);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.ibShuffle:
+                comm.respond((int) (Math.random() * defaultSongs.size()), defaultSongs);
+                break;
         }
     }
-
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if(parent.getId()==R.id.list_of_music)
+           System.out.println("ll00");
+        comm.respond(position, defaultSongs);
+    }
     class Mp3Filter implements FilenameFilter {
         @Override
         public boolean accept(File dir, String filename) {
@@ -144,4 +130,11 @@ public class LocalMusics extends Fragment implements View.OnClickListener {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
+    public static SongDataAdapter getAdapter(){
+        return adapter;
+    }
+    public static ArrayList<File> getSongData(){
+        return defaultSongs;
+    }
+
 }

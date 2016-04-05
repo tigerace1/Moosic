@@ -17,7 +17,7 @@ public class Profile extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        v = inflater.inflate(R.layout.local_music, container, false);
+        v = inflater.inflate(R.layout.activity_profile, container, false);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         String name,username = null;
         if(sharedPreferences.contains("firstName"))
@@ -26,7 +26,7 @@ public class Profile extends Fragment implements View.OnClickListener {
             username = sharedPreferences.getString("username", "");
         pic = (ImageView)v.findViewById(R.id.profPic);
         TextView txtUsername = (TextView)v.findViewById(R.id.txtUsername);
-        txtUsername.setText(username);
+        //txtUsername.setText(username);
         return v;
     }
     public void onClick(View v) {

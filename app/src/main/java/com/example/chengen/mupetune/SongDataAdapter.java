@@ -57,6 +57,5 @@ public class SongDataAdapter extends ArrayAdapter {
         handler.songName.setText(songDataProvider.getSongName());
         handler.songArtist.setText(songDataProvider.getSongArtist());
         return row;
-
     }
 }

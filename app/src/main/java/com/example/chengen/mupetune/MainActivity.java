@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }else{
-                    Intent intent = new Intent(MainActivity.this, LoginPage.class);
+                    Intent intent = new Intent(MainActivity.this, Tabs.class);
                     iv.startAnimation(an2);
                     startActivity(intent);
                     finish();

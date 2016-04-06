@@ -5,34 +5,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SongDataAdapter extends ArrayAdapter {
+public class MoosicRoomsAdapter extends ArrayAdapter {
     List<Object> adapterList = new ArrayList<>();
-    public SongDataAdapter(Context context, int resource){
+    public MoosicRoomsAdapter(Context context, int resource){
         super(context, resource);
     }
     private static class Handler{
-        ImageView songImage;
-        TextView songName;
-        TextView songArtist;
+        TextView RoomID;
+        TextView RoomName;
+        TextView RoomHost;
+        TextView RoomPeopleNum;
     }
-
     @Override
     public void add(Object object) {
         super.add(object);
         adapterList.add(object);
     }
-
     @Override
     public Object getItem(int position) {
         return super.getItem(position);
     }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row;
@@ -41,20 +38,23 @@ public class SongDataAdapter extends ArrayAdapter {
         if(convertView==null){
             final LayoutInflater inflater=(LayoutInflater)this.getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            row = inflater.inflate(R.layout.activity_song_data_adapter,parent,false);
+            row = inflater.inflate(R.layout.activity_moosic_rooms_adapter,parent,false);
             handler = new Handler();
-            handler.songImage = (ImageView)row.findViewById(R.id.ivSongImage);
-            handler.songName = (TextView)row.findViewById(R.id.tvSongName);
-            handler.songArtist = (TextView)row.findViewById(R.id.tvartist);
+            handler.RoomID = (TextView)row.findViewById(R.id.tvRoomID);
+            handler.RoomName = (TextView)row.findViewById(R.id.tvRoomName);
+            handler.RoomHost = (TextView)row.findViewById(R.id.tvRoomHost);
+            handler.RoomPeopleNum = (TextView)row.findViewById(R.id.tvRoomPeopleNum);
             row.setTag(handler);
         }else{
             handler=(Handler)row.getTag();
         }
-        SongDataProvider songDataProvider;
-        songDataProvider = (SongDataProvider)this.getItem(position);
-        handler.songImage.setBackground(songDataProvider.getSongImage());
-        handler.songName.setText(songDataProvider.getSongName());
-        handler.songArtist.setText(songDataProvider.getSongArtist());
+        MoosicRoomsProvider moosicRoomsProvider;
+        moosicRoomsProvider = (MoosicRoomsProvider)this.getItem(position);
+        handler.RoomID.setText(moosicRoomsProvider.getRoomID());
+        handler.RoomName.setText(moosicRoomsProvider.getRoomName());
+        handler.RoomHost.setText(moosicRoomsProvider.getRoomHost());
+        handler.RoomPeopleNum.setText(moosicRoomsProvider.getRoomPeopleNum());
         return row;
     }
 }
+

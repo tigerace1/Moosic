@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -26,6 +25,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
     private Button login;
     private TextView forget,signUp;
     private boolean isLogin;
+    private final static String url = "http://10.28.18.19:3000/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +83,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
     private void postLogin(String urlParameters){
         try {
             //url here
-            URL obj = new URL("http://192.168.0.115:3000/login");
+            URL obj = new URL(url + "login");
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
@@ -111,7 +111,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
     }
     private void getUserInfo(String user){
         try {
-            URL obj = new URL("http://192.168.0.115:3000/getUserInfo/" + user);
+            URL obj = new URL(url+"getUserInfo/" + user);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -121,8 +121,8 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
                 response.append(inputLine);
             }
             String userInfo = response.toString();
-            JSONArray jArray = new JSONArray(userInfo);
-            JSONObject json_obj = jArray.getJSONObject(0);
+            //JSONArray jArray = new JSONArray(userInfo);
+            JSONObject json_obj = new JSONObject(userInfo);
             String username = json_obj.getString("username");
             String firstName = json_obj.getString("firstName");
             String lastName = json_obj.getString("lastName");
@@ -133,6 +133,7 @@ public class LoginPage extends AppCompatActivity implements View.OnClickListener
             editor.putString("firstName", firstName);
             editor.putString("lastName", lastName);
             editor.putString("email", email);
+            System.out.println(sharedPref.getString("username", ""));
             editor.apply();
             in.close();
         }catch (Exception e){

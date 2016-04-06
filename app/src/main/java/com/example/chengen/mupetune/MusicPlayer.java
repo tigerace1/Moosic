@@ -82,7 +82,7 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
             mode.setBackground(new BitmapDrawable(getResources(), random));
         }
         if(mp==null){
-            photo.setBackground(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(),R.drawable.musics)));
+            photo.setBackground(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(),R.drawable.musicnote)));
             foreward.setClickable(false);
             playAndStop.setClickable(false);
             backward.setClickable(false);
@@ -91,13 +91,14 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.stopping);
             playAndStop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
         }else {
-            myHandler.postDelayed(UpdateSongTime, 100);
-            isRunning = true;
             seekBar.setMax(mp.getDuration());
+            currentTime.setText(getTimeString(mp.getCurrentPosition()));
             totalTime.setText("| " + getTimeString(mp.getDuration()));
             if (mp.isPlaying()){
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.going);
                 playAndStop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
+                myHandler.postDelayed(UpdateSongTime, 100);
+                isRunning = true;
             }else {
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.stopping);
                 playAndStop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
@@ -211,6 +212,7 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
         mp.stop();
         mp.release();
         myHandler.removeCallbacks(UpdateSongTime);
+        isRunning=false;
         if(MODE_CODE==0) {
             position = (position + 1) % mySongs.size();
             playSongs(position);
@@ -238,7 +240,7 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
             InputStream is = new ByteArrayInputStream(mmr.getEmbeddedPicture());
             bitmap = BitmapFactory.decodeStream(is);
         } else {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.musics);
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.musicnote);
         }
         if(singer==null||songName==null){
             name.setText(mySongs.get(position).getName().replace("mp3","").replace("wav","").replace("m4a",""));

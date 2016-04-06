@@ -27,7 +27,7 @@
                 android:textSize="23sp"
                 android:textColor="#000"
                 android:inputType="textEmailAddress"
-                android:layout_marginTop="46dp"
+                android:layout_marginTop="40dp"
                 android:layout_below="@+id/imageView"
                 android:layout_alignEnd="@+id/etpassword"
                 android:layout_alignStart="@+id/etpassword"
@@ -50,7 +50,7 @@
                 android:textAlignment="center" />
 
             <Button
-                android:layout_width="299dp"
+                android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:text="Log in"
                 android:id="@+id/btnlogin"

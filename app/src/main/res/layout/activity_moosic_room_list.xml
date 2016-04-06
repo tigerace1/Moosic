@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.chengen.mupetune.MoosicRoomList">
+
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/iBCreate"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/create"
+        android:layout_marginLeft="10dp" />
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/iBCreate">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/list_of_rooms"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/iBCreate"
+            android:choiceMode="singleChoice" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Create Room"
+        android:id="@+id/textView7"
+        android:layout_alignTop="@+id/iBCreate"
+        android:layout_toEndOf="@+id/iBCreate"
+        android:layout_marginTop="3dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignBottom="@+id/iBCreate" />
+</RelativeLayout>

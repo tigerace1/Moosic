@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.chengen.mupetune.MoosicRoomsAdapter"
+    android:padding="15dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvRoomID"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="280dp"
+        android:layout_height="35dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/tvRoomName"
+        android:layout_below="@+id/tvRoomID"
+        android:layout_alignParentStart="true"
+        android:layout_alignEnd="@+id/tvRoomPeopleNum"
+        android:singleLine="true"
+        android:textIsSelectable="false"
+        android:textSize="18sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:layout_width="250dp"
+        android:layout_height="35dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/tvRoomHost"
+        android:layout_below="@+id/tvRoomName"
+        android:layout_toEndOf="@+id/tvRoomID"
+        android:singleLine="true"
+        android:textSize="14sp"
+        android:textColor="#06e5fe"
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:id="@+id/tvRoomPeopleNum"
+        android:layout_below="@+id/tvRoomName"
+        android:layout_toEndOf="@+id/tvRoomHost"
+        android:layout_marginLeft="10dp"
+        android:singleLine="true"
+        android:textSize="14sp"
+        android:textColor="#06e5fe"
+        android:layout_marginTop="5dp" />
+</RelativeLayout>

@@ -27,7 +27,7 @@ import java.util.Collections;
 public class LocalMusics extends Fragment implements View.OnClickListener,AdapterView.OnItemClickListener {
     private static ArrayList<File> defaultSongs;
     private static final String path = "/storage/extSdCard/music";
-    private static ListView musics;
+    private ListView musics;
     private static SongDataAdapter adapter;
     private Communicator comm;
     View v;
@@ -67,7 +67,7 @@ public class LocalMusics extends Fragment implements View.OnClickListener,Adapte
         Collections.sort(defaultSongs);
         adapter = new SongDataAdapter(getActivity().getApplication(),
                 R.layout.activity_song_data_adapter);
-        Bitmap bitmap;
+        Bitmap bitmap=null;
         for (int i = 0; i < defaultSongs.size(); i++) {
             MediaMetadataRetriever mmr = new MediaMetadataRetriever();
             mmr.setDataSource(defaultSongs.get(i).getPath());
@@ -85,11 +85,12 @@ public class LocalMusics extends Fragment implements View.OnClickListener,Adapte
                 singer = "";
                 songName = defaultSongs.get(i).getName().replace("mp3", "").replace("wav", "").replace("m4a", "");
             }
-            SongDataProvider provider = new SongDataProvider(new BitmapDrawable(getResources(), resizeBitmap(bitmap, 80, 80))
+            SongDataProvider provider = new SongDataProvider(new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80,true))
                     , songName, singer);
             adapter.add(provider);
         }
         musics.setAdapter(adapter);
+        bitmap.recycle();
     }
 
     @Override
@@ -102,8 +103,6 @@ public class LocalMusics extends Fragment implements View.OnClickListener,Adapte
     }
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if(parent.getId()==R.id.list_of_music)
-           System.out.println("ll00");
         comm.respond(position, defaultSongs);
     }
     class Mp3Filter implements FilenameFilter {
@@ -125,16 +124,8 @@ public class LocalMusics extends Fragment implements View.OnClickListener,Adapte
         canvas.drawBitmap(bitmap, middleX - bitmap.getWidth() / 2, middleY - bitmap.getHeight() / 2, new Paint(Paint.FILTER_BITMAP_FLAG));
         return scaledBitmap;
     }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
-    public static SongDataAdapter getAdapter(){
-        return adapter;
-    }
-    public static ArrayList<File> getSongData(){
-        return defaultSongs;
-    }
-
 }

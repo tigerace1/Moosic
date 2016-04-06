@@ -43,7 +43,7 @@ public class Tabs extends AppCompatActivity implements Communicator, ViewPager.O
             getSupportActionBar().setTitle(sharedPreferences.getString("username",""));
         fragmentList = new ArrayList<>();
         musicPlayer = new MusicPlayer();
-        fragmentList.add(new MoosicRooms());
+        fragmentList.add(new MoosicRoomList());
         fragmentList.add(new LocalMusics());
         fragmentList.add(musicPlayer);
         fragmentList.add(new Profile());

@@ -16,8 +16,9 @@
         android:textSize="18sp"
         android:layout_marginTop="15dp"
         android:background="@drawable/panel"
-        android:textAlignment="center"
-        android:textColor="#000" />
+        android:textAlignment="gravity"
+        android:textColor="#000"
+        android:gravity="center_vertical|center_horizontal" />
 
     <EditText
         android:layout_width="384dp"
@@ -28,8 +29,9 @@
         android:layout_marginTop="15dp"
         android:textSize="18sp"
         android:background="@drawable/panel"
-        android:textAlignment="center"
-        android:textColor="#000" />
+        android:textAlignment="gravity"
+        android:textColor="#000"
+        android:gravity="center_vertical|center_horizontal" />
 
     <EditText
         android:layout_width="match_parent"
@@ -39,8 +41,9 @@
         android:layout_marginTop="15dp"
         android:textSize="18sp"
         android:background="@drawable/panel"
-        android:textAlignment="center"
-        android:textColor="#000" />
+        android:textAlignment="gravity"
+        android:textColor="#000"
+        android:gravity="center_vertical|center_horizontal" />
 
     <EditText
         android:layout_width="match_parent"
@@ -50,8 +53,9 @@
         android:layout_marginTop="15dp"
         android:textSize="18sp"
         android:background="@drawable/panel"
-        android:textAlignment="center"
-        android:textColor="#000" />
+        android:textAlignment="gravity"
+        android:textColor="#000"
+        android:gravity="center_vertical|center_horizontal" />
 
     <EditText
         android:layout_width="match_parent"
@@ -63,8 +67,9 @@
         android:layout_marginTop="15dp"
         android:textSize="18sp"
         android:background="@drawable/panel"
-        android:textAlignment="center"
-        android:textColor="#000" />
+        android:textAlignment="gravity"
+        android:textColor="#000"
+        android:gravity="center_vertical|center_horizontal" />
 
     <EditText
         android:layout_width="match_parent"
@@ -76,8 +81,9 @@
         android:layout_marginTop="15dp"
         android:textSize="18sp"
         android:background="@drawable/panel"
-        android:textAlignment="center"
-        android:textColor="#000" />
+        android:textAlignment="gravity"
+        android:textColor="#000"
+        android:gravity="center_vertical|center_horizontal" />
 
     <Button
         style="?android:attr/buttonStyleSmall"

@@ -64,6 +64,12 @@
         </activity>
         <activity android:name=".MoosicRooms" >
         </activity>
+        <activity android:name=".MoosicRoomList" >
+        </activity>
+        <activity android:name=".MoosicRoomsAdapter" >
+        </activity>
+        <activity android:name=".CreateRoom" >
+        </activity>
     </application>
 
 </manifest>

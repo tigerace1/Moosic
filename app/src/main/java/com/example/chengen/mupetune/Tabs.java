@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 public class Tabs extends AppCompatActivity implements Communicator, ViewPager.OnPageChangeListener,TabHost.OnTabChangeListener {
@@ -52,7 +51,7 @@ public class Tabs extends AppCompatActivity implements Communicator, ViewPager.O
         initHost();
     }
     @Override
-    public void respond(int position, ArrayList<File> songs) {
+    public void respond(int position, ArrayList<SongsDatas> songs) {
         musicPlayer.getData(position, songs);
         tabHost.setCurrentTab(2);
         viewPager.setCurrentItem(2);

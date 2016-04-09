@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:id="@+id/HostList"
+        android:layout_gravity="center_horizontal"
+        android:layout_above="@+id/btnHostAdd"
+        android:layout_alignParentTop="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Songs"
+        android:id="@+id/btnHostAdd"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/ibBackTwo"
+        android:layout_alignTop="@+id/ibPlayTwo"
+        android:layout_toStartOf="@+id/ibPlayTwo"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/pre" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/ibPlayTwo"
+        android:layout_marginEnd="25dp"
+        android:layout_below="@+id/HostList"
+        android:layout_toStartOf="@+id/ibForeTwo"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/going" />
+
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:id="@+id/ibForeTwo"
+        android:layout_marginRight="10dp"
+        android:layout_alignTop="@+id/ibPlayTwo"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="39dp"
+        android:background="@drawable/next" />
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/HostAddingList"
+        android:layout_centerVertical="true"
+        android:layout_alignStart="@+id/ibBackTwo"
+        android:visibility="gone" />
+
+</RelativeLayout>

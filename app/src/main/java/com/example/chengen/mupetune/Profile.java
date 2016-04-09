@@ -12,19 +12,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 public class Profile extends Fragment implements View.OnClickListener {
     View v;
-    private ImageView pic;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         v = inflater.inflate(R.layout.activity_profile, container, false);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        getActivity().getActionBar().hide();
         String name,username = null;
         if(sharedPreferences.contains("firstName"))
             name = sharedPreferences.getString("firstName", "");
         if(sharedPreferences.contains("username"))
             username = sharedPreferences.getString("username", "");
-        pic = (ImageView)v.findViewById(R.id.profPic);
+        ImageView pic = (ImageView) v.findViewById(R.id.profPic);
         TextView txtUsername = (TextView)v.findViewById(R.id.txtUsername);
         //txtUsername.setText(username);
         return v;

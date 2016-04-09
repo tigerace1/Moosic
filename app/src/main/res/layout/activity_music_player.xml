@@ -14,8 +14,8 @@
         android:layout_alignParentStart="true" />
 
     <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:id="@+id/iBBackward"
         android:layout_marginLeft="50dp"
         android:background="@drawable/pre"
@@ -23,8 +23,8 @@
         android:layout_toStartOf="@+id/tBPlayStop" />
 
     <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:id="@+id/iBForward"
         android:layout_marginRight="50dp"
         android:layout_marginLeft="35dp"
@@ -35,8 +35,8 @@
         android:layout_marginBottom="8dp" />
 
     <ToggleButton
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:id="@+id/tBPlayStop"
         android:textOn=" "
         android:textOff=" "
@@ -125,4 +125,14 @@
         android:layout_alignBottom="@+id/tvTotalTime"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="3dp" />
+
+    <ImageButton
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:id="@+id/imageButton3"
+        android:layout_above="@+id/seekBar"
+        android:layout_toEndOf="@+id/ibMode"
+        android:layout_marginLeft="20dp"
+        android:background="@drawable/newshare"
+        android:layout_marginBottom="2dp" />
 </RelativeLayout>

@@ -4,11 +4,11 @@ public class MoosicRoomsProvider {
     private String RoomName;
     private String RoomHost;
     private String RoomPeopleNum;
-    public MoosicRoomsProvider(String roomID, String roomName, String roomHost, String roomPeopleNum) {
+    public MoosicRoomsProvider(String roomID, String roomName, String roomHost) {
         RoomID = roomID;
         RoomName = roomName;
         RoomHost = roomHost;
-        RoomPeopleNum = roomPeopleNum;
+       // RoomPeopleNum = roomPeopleNum;
     }
 
     public String getRoomID() {

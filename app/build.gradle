@@ -29,4 +29,26 @@ dependencies {
     compile 'com.android.support:support-v13:23.2.0'
     compile 'com.android.support:design:23.2.0'
     compile 'com.google.android.gms:play-services:8.4.0'
+    compile files('src/main/lib/aws-android-sdk-apigateway-core-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-autoscaling-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-cloudwatch-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-cognito-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-core-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-ddb-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-ddb-mapper-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-ec2-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-iot-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-elb-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-sqs-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-sns-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-ses-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-sdb-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-s3-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-mobileanalytics-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-lambda-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-kms-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-kinesis-2.2.14.jar')
+    compile files('src/main/lib/aws-android-sdk-machinelearning-2.2.14.jar')
+    compile files('libs/gson-2.2.2.jar')
+    compile files('libs/httpclient-4.3.3.jar')
 }

@@ -32,15 +32,18 @@
         <activity
             android:name=".LoginPage"
             android:label="@string/title_activity_login_page"
-            android:theme="@style/AppTheme" >
+            android:theme="@style/AppTheme">
         </activity>
-        <activity android:name=".MusicPlayer" >
+        <activity android:name=".MusicPlayer"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".SongDataAdapter" >
+        <activity android:name=".SongDataAdapter">
         </activity>
-        <activity android:name=".LocalMusics" >
+        <activity android:name=".LocalMusics"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".Tabs" >
+        <activity android:name=".Tabs"
+            android:screenOrientation="portrait">
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -53,22 +56,23 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
-        <activity android:name=".Search" >
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+        <activity android:name=".Search"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".SignUpLayout" >
-        </activity>
-        <activity android:name=".OnlineMusic" >
+        <activity android:name=".SignUpLayout">
         </activity>
         <activity android:name=".Profile" >
         </activity>
-        <activity android:name=".MoosicRooms" >
+        <activity android:name=".MoosicRoom">
         </activity>
         <activity android:name=".MoosicRoomList" >
         </activity>
         <activity android:name=".MoosicRoomsAdapter" >
         </activity>
-        <activity android:name=".CreateRoom" >
+        <activity android:name=".CreateRoom">
         </activity>
     </application>
 

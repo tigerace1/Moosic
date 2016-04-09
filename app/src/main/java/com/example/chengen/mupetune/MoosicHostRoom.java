@@ -4,40 +4,41 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
-public class MoosicRoom extends AppCompatActivity implements View.OnClickListener {
+public class MoosicHostRoom extends AppCompatActivity implements View.OnClickListener, MediaPlayer.OnCompletionListener {
     private static ArrayList<SongsDatas> mySongs;
+    private static int position;
+    private ImageButton foreward,backward,playStop;
     private ListView songs;
-    private static LinkedList<String> songName,singers;
+    private static MediaPlayer mp;
+    private static LinkedList<String> songName, singers;
     private static SongDataAdapter adapter, adapter2;
     private static ArrayList<File> songData;
     private static final String path = "/storage/extSdCard/music";
@@ -45,13 +46,14 @@ public class MoosicRoom extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_moosic_room);
+        setContentView(R.layout.moosic_host_room_layout);
         ListView rooms = (ListView) findViewById(R.id.listRooms);
         songs = (ListView) findViewById(R.id.listSongs);
-        Button add = (Button) findViewById(R.id.btnAdd);
-        Button update = (Button) findViewById(R.id.btnUpdate);
+        Button add = (Button) findViewById(R.id.btnHostAdd);
+        foreward = (ImageButton)findViewById(R.id.ibForeTwo);
+        backward = (ImageButton)findViewById(R.id.ibBackTwo);
+        playStop = (ImageButton)findViewById(R.id.ibPlayTwo);
         add.setOnClickListener(this);
-        update.setOnClickListener(this);
         adapter = new SongDataAdapter(getApplicationContext(),
                 R.layout.activity_song_data_adapter);
         songName = new LinkedList<>();
@@ -80,12 +82,12 @@ public class MoosicRoom extends AppCompatActivity implements View.OnClickListene
         rooms.setAdapter(adapter);
         if (adapter2 != null) {
             songs.setAdapter(adapter2);
-        }
-        updatePlayList();
+        }else
+            updatePlayList();
         songs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MoosicRoom.this);
+            public void onItemClick(AdapterView<?> parent, View view, final int pos, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MoosicHostRoom.this);
                 builder.setCancelable(false);
                 builder.setMessage("Do you want to add the song?");
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -95,11 +97,17 @@ public class MoosicRoom extends AppCompatActivity implements View.OnClickListene
                             @Override
                             public void run() {
                                 super.run();
-                                upload(songName.get(position), singers.get(position), fileToString(songData.get(position)));
+                                upload(songName.get(pos), singers.get(pos), songData.get(pos).getName());
                             }
                         };
                         t.start();
                         songs.setVisibility(View.GONE);
+                        try {
+                            t.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        updateList();
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -124,12 +132,35 @@ public class MoosicRoom extends AppCompatActivity implements View.OnClickListene
                 else
                     songs.setVisibility(View.VISIBLE);
                 break;
-            case R.id.btnUpdate:
-                updateList();
+            case R.id.tBPlayStop:
+                if (mp.isPlaying()) {
+                    mp.pause();
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.stopping);
+                    playStop.setBackground(new BitmapDrawable(getResources(), bitmap));
+                } else {
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.going);
+                    playStop.setBackground(new BitmapDrawable(getResources(), bitmap));
+                    mp.start();
+                }
+                break;
+            case R.id.iBForward:
+                mp.stop();
+                mp.release();
+                position = (position + 1) % mySongs.size();
+                Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), R.drawable.going);
+                playStop.setBackground(new BitmapDrawable(getResources(), bitmap2));
+                playSongs(position);
+                break;
+            case R.id.iBBackward:
+                mp.stop();
+                mp.release();
+                position = (position - 1 < 0) ? mySongs.size() - 1 : position - 1;
+                Bitmap bitmap3 = BitmapFactory.decodeResource(getResources(), R.drawable.going);
+                playStop.setBackground(new BitmapDrawable(getResources(), bitmap3));
+                playSongs(position);
                 break;
         }
     }
-
     private void getFromDB(String groupID) {
         try {
             URL obj = new URL(url + "getSongForGroup/" + groupID);
@@ -147,17 +178,16 @@ public class MoosicRoom extends AppCompatActivity implements View.OnClickListene
                 JSONObject songObject = jArray.getJSONObject(i);
                 String songName = songObject.getString("songName");
                 String artist = songObject.getString("artist");
-                String songUrl = decompress(songObject.getString("Url"));
-                SongsDatas songsDatas  = new SongsDatas(songName,artist,songUrl,"");
-                mySongs.add(songsDatas);
+                String SongUrl = songObject.getString("url");
+                SongsDatas datas = new SongsDatas(songName,artist,SongUrl,"");
+                mySongs.add(datas);
             }
             in.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    private void upload(String songName, String artist, String fileS) {
+    private void upload(String songName, String artist, String fileName) {
         try {
             URL obj = new URL(url + "uploadSong");
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -167,7 +197,7 @@ public class MoosicRoom extends AppCompatActivity implements View.OnClickListene
             DataOutputStream wr = new DataOutputStream(con.getOutputStream());
             SharedPreferences groupPref = getSharedPreferences("groupInfo", Context.MODE_PRIVATE);
             String groupID = groupPref.getString("groupID", "");
-            wr.writeUTF("songName=" + songName + "&artist" + artist + "&file=" + fileS + "&groupID=" + groupID);
+            wr.writeUTF("songName=" + songName + "&artist" + artist + "&file=" + fileName + "&groupID=" + groupID);
             wr.flush();
             wr.close();
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -203,7 +233,6 @@ public class MoosicRoom extends AppCompatActivity implements View.OnClickListene
             adapter.add(provider);
         }
     }
-
     private void updatePlayList() {
         songData = new ArrayList<>();
         File home = new File(path);
@@ -231,69 +260,28 @@ public class MoosicRoom extends AppCompatActivity implements View.OnClickListene
         }
         songs.setAdapter(adapter2);
     }
-
     class Mp3Filter implements FilenameFilter {
         @Override
         public boolean accept(File dir, String filename) {
             return (filename.endsWith(".mp3") || filename.endsWith(".wav") || filename.endsWith("m4a"));
         }
     }
-    private String fileToString(File file) {
-        FileInputStream fin = null;
-        String s = null;
-        try {
-            fin = new FileInputStream(file);
-            byte fileContent[] = new byte[(int) file.length()];
-            fin.read(fileContent);
-            s = new String(fileContent);
-            return compress(s);
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found" + e);
-        } catch (IOException ioe) {
-            System.out.println("Exception while reading file " + ioe);
-        } finally {
-            try {
-                if (fin != null) {
-                    fin.close();
-                }
-            } catch (IOException ioe) {
-                System.out.println("Error while closing stream: " + ioe);
-            }
-        }
-        return s;
+    private void playSongs(int position) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.going);
+        backward.setClickable(true);
+        playStop.setClickable(true);
+        foreward.setClickable(true);
+        playStop.setBackground(new BitmapDrawable(getResources(), bitmap));
+        Uri uri = Uri.parse(mySongs.get(position).getSongPath());
+        mp = MediaPlayer.create(getApplicationContext(), uri);
+        mp.setOnCompletionListener(this);
+        mp.start();
     }
-
-    public static String compress(String string) throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream(string.length());
-        GZIPOutputStream gos = new GZIPOutputStream(os);
-        gos.write(string.getBytes());
-        gos.close();
-        byte[] compressed = os.toByteArray();
-        os.close();
-        return compressed.toString();
-    }
-
-    public static String decompress(String zipText) throws IOException {
-        byte[] compressed = Base64.decode(zipText, 1);
-        if (compressed.length > 4)
-        {
-            GZIPInputStream gzipInputStream = new GZIPInputStream(
-                    new ByteArrayInputStream(compressed, 4,
-                            compressed.length - 4));
-
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            for (int value = 0; value != -1;) {
-                value = gzipInputStream.read();
-                if (value != -1) {
-                    baos.write(value);
-                }
-            }
-            gzipInputStream.close();
-            baos.close();
-            String sReturn = new String(baos.toByteArray(), "UTF-8");
-            return sReturn;
-        } else {
-            return "";
-        }
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mp.stop();
+        mp.release();
+        position = (position + 1) % mySongs.size();
+        playSongs(position);
     }
 }

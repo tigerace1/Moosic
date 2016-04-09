@@ -1,15 +1,17 @@
 package com.example.chengen.mupetune;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,16 +23,13 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class MusicPlayer extends Fragment implements View.OnClickListener,MediaPlayer.OnCompletionListener {
-    private static ArrayList<File> mySongs;
+    private static ArrayList<SongsDatas> mySongs;
     private static int position;
     private static MediaPlayer mp;
-    private Bitmap loop,repeat,random,bitmap;;
+    private Bitmap loop,repeat,random;
     private SeekBar seekBar;
     private ImageButton mode,foreward,backward;
     private ImageView photo;
@@ -38,9 +37,10 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
     private ToggleButton playAndStop;
     private static int MODE_CODE=0;
     private boolean isRunning=false;
+    String text;
     private Handler myHandler = new Handler();
     View v;
-    public void getData(int pos,ArrayList<File>songs){
+    public void getData(int pos,ArrayList<SongsDatas>songs){
         position=pos;
         mySongs=songs;
         if (mySongs!=null) {
@@ -74,6 +74,9 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
         backward.setOnClickListener(this);
         playAndStop.setOnClickListener(this);
         mode.setOnClickListener(this);
+        SharedPreferences sharedPref =getActivity().getSharedPreferences("mode", Context.MODE_PRIVATE);
+        if (sharedPref.contains("modeInt"))
+           MODE_CODE = sharedPref.getInt("modeInt",0);
         if(MODE_CODE==0){
             mode.setBackground(new BitmapDrawable(getResources(), loop));
         }else if(MODE_CODE==1){
@@ -87,13 +90,15 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
             playAndStop.setClickable(false);
             backward.setClickable(false);
             seekBar.setVisibility(View.INVISIBLE);
-            totalTime.setText("00:00:00");
+            text = "00:00:00";
+            totalTime.setText(text);
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.stopping);
             playAndStop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
         }else {
             seekBar.setMax(mp.getDuration());
             currentTime.setText(getTimeString(mp.getCurrentPosition()));
-            totalTime.setText("| " + getTimeString(mp.getDuration()));
+            text = "| "+getTimeString((mp.getDuration()));
+            totalTime.setText(text);
             if (mp.isPlaying()){
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.going);
                 playAndStop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
@@ -125,14 +130,15 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
         foreward.setClickable(true);
         seekBar.setVisibility(View.VISIBLE);
         playAndStop.setBackgroundDrawable(new BitmapDrawable(getResources(), bitmap));
-        Uri uri = Uri.parse(mySongs.get(position).toString());
+        Uri uri = Uri.parse(mySongs.get(position).getSongPath());
         mp = MediaPlayer.create(getActivity().getApplicationContext(), uri);
         mp.setOnCompletionListener(this);
         mp.start();
         isRunning=true;
         myHandler.postDelayed(UpdateSongTime, 100);
         seekBar.setMax(mp.getDuration());
-        totalTime.setText("| " + getTimeString(mp.getDuration()));
+        text = "| "+getTimeString(mp.getDuration());
+        totalTime.setText(text);
         changeData(position);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -231,24 +237,27 @@ public class MusicPlayer extends Fragment implements View.OnClickListener,MediaP
                 String.format("%02d", seconds);
     }
     private void changeData(int position){
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-        mmr.setDataSource(mySongs.get(position).getPath());
-        byte[] artBytes =  mmr.getEmbeddedPicture();
-        String singer = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-        String songName = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
-        if(artBytes != null) {
-            InputStream is = new ByteArrayInputStream(mmr.getEmbeddedPicture());
-            bitmap = BitmapFactory.decodeStream(is);
-        } else {
-            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.musicnote);
-        }
-        if(singer==null||songName==null){
-            name.setText(mySongs.get(position).getName().replace("mp3","").replace("wav","").replace("m4a",""));
-        }else{
-            name.setText(songName);
-            artist.setText(singer);
-        }
+        name.setText(mySongs.get(position).getSongNames());
+        artist.setText(mySongs.get(position).getSongArtist());
         photo.setBackground(null);
-        photo.setBackground(new BitmapDrawable(getResources(), bitmap));
+        photo.setBackground(new BitmapDrawable(getResources(),stringToBitMap(mySongs.get(position).getSongCovers())));
+    }
+    public Bitmap stringToBitMap(String encodedString){
+        try{
+            byte [] encodeByte= Base64.decode(encodedString, Base64.URL_SAFE);
+            return BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+        }catch(Exception e){
+            e.getMessage();
+            return null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("mode", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("modeInt",MODE_CODE);
+        editor.apply();
     }
 }
